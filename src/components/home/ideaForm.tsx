@@ -2,7 +2,7 @@ import React from 'react'
 
 const IdeaFrom = () => {
   return (
-    <div>IdeaFrom</div>
+    <div>Hello</div>
   )
 }
 
