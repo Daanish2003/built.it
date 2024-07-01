@@ -1,9 +1,17 @@
+import Navbar from "@/components/home/navbar";
+import { Card, CardContent } from "@/components/ui/card";
+import getIdeas from "./actions/getIdeas";
+import IdeaDisplay from "@/components/home/ideaDisplay";
 
+export default async function Home() {
+  const data = await getIdeas();
 
-export default function Home() {
   return (
-    <div>
-      Home
-    </div>
+    <>
+      <Navbar />
+      <IdeaDisplay ideas={data} />      
+    </>
   );
 }
+
+

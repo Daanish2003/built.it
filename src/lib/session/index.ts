@@ -1,6 +1,7 @@
 "use server"
 import { cache } from "react";
-import { validateRequest } from "../auth";
+import { validateRequest } from "../auth/validateRequest";
+
 
 export const getCurrentUser = cache(async () => {
     const session = await validateRequest();

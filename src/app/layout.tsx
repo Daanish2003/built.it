@@ -3,7 +3,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import RecoilContextProvider from "@/lib/store/recoilContextProvider";
 import SessionProvider from "@/providers/sessionProvider";
-import { validateRequest } from "@/lib/auth";
+import { validateRequest } from "@/lib/auth/validateRequest";
+
 
 
 

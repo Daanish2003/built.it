@@ -5,6 +5,7 @@ import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 import { logout } from '@/app/actions/logout'
 import { useSession } from '@/providers/sessionProvider'
+import IdeaDialog from '../ideas/ideaDialog'
 
 
 
@@ -24,7 +25,7 @@ const Navbar = () => {
        console.log(res.error)
     } else if (res.success) {
       console.log(res.message)
-      router.push("/home")
+      router.push("/")
 
     }
   }
@@ -33,7 +34,7 @@ const Navbar = () => {
     <nav className="flex justify-between items-center border-b-2 border-gray-300 px-12">
         <Link href="/"><Image src="/logo.png" width={200} height={200} alt="built.it"/></Link>
         <div className='space-x-4'>
-           <Button size="lg" variant={"outline"}>+ Share Ideas</Button>
+           <IdeaDialog />
             {
               session ? (
               <Button size="lg" onClick={() => logoutHandle()}>Logout</Button>

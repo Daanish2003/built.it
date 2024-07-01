@@ -2,7 +2,6 @@
 import { github, google } from "@/lib/auth/oauth";
 import { generateCodeVerifier, generateState } from "arctic";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 
 export const createGoogleAuthorizationURL = async () => {

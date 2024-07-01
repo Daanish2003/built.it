@@ -131,7 +131,7 @@ export const GET = async (req: NextRequest) => {
       }
 
       return NextResponse.redirect(
-        new URL("/home", process.env.NEXT_PUBLIC_BASE_URL),
+        new URL("/", process.env.NEXT_PUBLIC_BASE_URL),
         {
           status: 302,
         }
@@ -154,7 +154,7 @@ export const GET = async (req: NextRequest) => {
     })
 
     return NextResponse.redirect(
-      new URL("/home", process.env.NEXT_PUBLIC_BASE_URL),
+      new URL("/", process.env.NEXT_PUBLIC_BASE_URL),
       {
         status: 302,
       }

@@ -11,3 +11,15 @@ interface ActionResult {
     success: boolean,
     message: string | null
 }
+
+interface ideas{
+    id: string,
+    userId: string,
+    title: string,
+    description: string,
+    createdAt: Date
+}
+
+interface IdeaType {
+    ideas: ideas[]
+}

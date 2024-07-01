@@ -5,6 +5,7 @@ import { redirect, useRouter } from 'next/navigation'
 import { createGithubAuthorizationURL, createGoogleAuthorizationURL } from '@/app/actions/login'
 
 
+
 const LoginForm = () => {
   const router = useRouter()
 
@@ -25,6 +26,8 @@ const GithubAuth = async () => {
     console.log(githubAuth.error)
   }
 }
+
+
        
   return (
     <AuthCard
@@ -34,7 +37,7 @@ const GithubAuth = async () => {
       backButtonLabel='Go back to home page'
     >
             <Button type="submit" onClick={GoogleAuth}>Google</Button>
-            <Button type="submit" onClick={GithubAuth}>Github</Button>
+            {/* <Button type="submit" onClick={GithubAuth}>Github</Button> */}
     </AuthCard>
   )
 }

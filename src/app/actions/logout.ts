@@ -1,5 +1,6 @@
 "use server"
-import { lucia, validateRequest } from "@/lib/auth"
+import { lucia } from "@/lib/auth"
+import { validateRequest } from "@/lib/auth/validateRequest";
 import { cookies } from "next/headers";
 
 export const logout = async (): Promise<ActionResult> => {
