@@ -1,11 +1,14 @@
 import { defineConfig } from 'drizzle-kit'
+
+const isProduction = process.env.NODE_ENV === 'production';
+
 export default defineConfig({
  schema: "./src/db/schema.ts",
   dialect: 'postgresql',
-  out: './src/db/migrations',
+  out: isProduction ?  process.env.PROD_DB_MIGRATIONS! : process.env.DEV_DB_MIGRATIONS,
   dbCredentials: {
-    url: process.env.DB_URL!,
+    url: isProduction ? process.env.PROD_DB_URL! : process.env.DEV_DB_URL!,
   },
-  verbose: true,
+  verbose: !isProduction,
   strict: true,
 })
