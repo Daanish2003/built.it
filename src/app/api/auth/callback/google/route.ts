@@ -128,12 +128,14 @@ export const GET = async (req: NextRequest) => {
             )
           }
         }
-        return NextResponse.redirect(
-          new URL("/", process.env.NEXT_PUBLIC_BASE_URL),
-          {
-            status: 302
-          }
-        )
+        const isProduction = process.env.NODE_ENV === 'production';
+
+      return NextResponse.redirect(
+        new URL("/", isProduction ? process.env.PROD_NEXT_PUBLIC_BASE_URL : process.env.NEXT_PUBLIC_BASE_URL),
+        {
+          status: 302,
+        }
+      )
       }
     })
 
