@@ -12,5 +12,8 @@ export const IdeaSchema = z.object({
     title: z.string().min(2, {message: "minimum 2 characters are required"}),
     description: z.string().min(2, {message: "minimum 2 characters required"}),
     //tags: z.array(z.string()).nonempty().optional(),
-    //image: z.any().refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`).refine((file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),"Only .jpg, .jpeg, .png and .webp formats are supported.").nullable().optional(),
+    image: z
+      //Rest of validations done via react dropzone
+      .instanceof(File)
+      .refine((file) => file.size !== 0, "Please upload an image").optional(),
 }).required()

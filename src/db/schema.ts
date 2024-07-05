@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, varchar, serial, primaryKey} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, varchar, serial, primaryKey, integer} from "drizzle-orm/pg-core";
 
 export const userTable = pgTable("user", {
 	id: text("id").primaryKey(),
@@ -31,43 +31,52 @@ export const oauthAccountTable = pgTable("oauth_account", {
 	expiresAt: timestamp("expires_at", {
 		withTimezone: true,
 		mode: "date"
-	}).notNull()
+	}).notNull().defaultNow()
 });
 
 export const ideasTable = pgTable("ideas", {
   id: text("id").primaryKey(),
   userId: text("user_id").notNull().references(() => userTable.id),
-  // image: text("image_url"),
+  imageId: text("image_id").notNull().references(() => imagesTable.id),
   title: text("title").notNull(),
   description: text("description").notNull(),
  // tags: text("tags"),
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date"
-  }).notNull()
+  }).notNull().defaultNow()
 })
 
-// export const commentsTable = pgTable("comments", {
-//     id: text("id").primaryKey(),
-//     ideaId: text("idea_id").notNull().references(() => ideasTable.id),
-//     userId: text("user_id").notNull().references(() => userTable.id),
-//     content: text("content").notNull(),
-//     createdAt: timestamp("created_at", {
-//       withTimezone: true,
-//       mode: "date"
-//     }).notNull()
-// })
+export const commentsTable = pgTable("comments", {
+    id: text("id").primaryKey(),
+    ideaId: text("idea_id").notNull().references(() => ideasTable.id),
+    userId: text("user_id").notNull().references(() => userTable.id),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", {
+      withTimezone: true,
+      mode: "date"
+    }).notNull().defaultNow()
+})
 
-// export const likesTable = pgTable("likes", {
-//      id: text("id").primaryKey(),
-//      userId: text("user_id").notNull().references(() => userTable.id),
-//      ideaId: text("idea_id").notNull().references(() => ideasTable.id),
-//      createdAt: timestamp("created_at", {
-//       withTimezone: true,
-//       mode: "date"
-//     }).notNull()
-// })
+export const likesTable = pgTable("likes", {
+     id: text("id").primaryKey(),
+     userId: text("user_id").notNull().references(() => userTable.id),
+     ideaId: text("idea_id").notNull().references(() => ideasTable.id),
+     createdAt: timestamp("created_at", {
+      withTimezone: true,
+      mode: "date"
+    }).notNull().defaultNow()
+})
 
+export const imagesTable = pgTable("images", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => userTable.id),
+  url: text("url").notNull(),
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date"
+  }).notNull().defaultNow()
+})
 // export const viewsTable = pgTable("views", {
 //   id: text("id").primaryKey(),
 //   userId: text("user_id").notNull().references(() => userTable.id),

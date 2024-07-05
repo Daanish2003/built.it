@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1719551903428,
-      "tag": "0000_serious_smasher",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1719556663507,
-      "tag": "0001_fancy_echo",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1719656297637,
-      "tag": "0002_chemical_norman_osborn",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1719895392731,
-      "tag": "0003_productive_vision",
+      "when": 1720180952993,
+      "tag": "0000_fearless_mephisto",
       "breakpoints": true
     }
   ]

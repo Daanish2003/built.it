@@ -2,6 +2,10 @@
 import { Session, User } from 'lucia'
 import React, { createContext, useContext } from 'react'
 
+ 
+
+
+
 interface SessionProviderProps {
     user: User | null
     session: Session | null
@@ -13,7 +17,9 @@ const SessionContext = createContext<SessionProviderProps>(
 
 const SessionProvider = ({children, value}: { children: React.ReactNode, value: SessionProviderProps}) => {
   return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={value}>
+        {children}
+    </SessionContext.Provider>
   )
 }
 
