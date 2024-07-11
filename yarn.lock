@@ -3323,19 +3323,19 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-drizzle-kit@^0.22.7:
-  version "0.22.7"
-  resolved "https://registry.yarnpkg.com/drizzle-kit/-/drizzle-kit-0.22.7.tgz#4339c3e24c6555ea8cbad605f005b3db3e604a9c"
-  integrity sha512-9THPCb2l1GPt7wxhws9LvTR0YG565ZlVgTuqGMwjs590Kch1pXu4GyjEArVijSF5m0OBj3qgdeKmuJXhKXgWFw==
+drizzle-kit@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/drizzle-kit/-/drizzle-kit-0.23.0.tgz#4ac8b4034a75091569666242e99df7bafd590148"
+  integrity sha512-w9jE97z193dd4jzAyj4Uv2SOh8Ydue70Ki6W0awy4bGM1aPXan6zD6Yv+nNTA6oGgNTDl2MJFxutjHG4fden5g==
   dependencies:
     "@esbuild-kit/esm-loader" "^2.5.5"
     esbuild "^0.19.7"
     esbuild-register "^3.5.0"
 
-drizzle-orm@^0.31.2:
-  version "0.31.2"
-  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.31.2.tgz#221a257dd487bab49ddb88a17bd82388600cf655"
-  integrity sha512-QnenevbnnAzmbNzQwbhklvIYrDE8YER8K7kSrAWQSV1YvFCdSQPzj+jzqRdTSsV2cDqSpQ0NXGyL1G9I43LDLg==
+drizzle-orm@^0.32.0:
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/drizzle-orm/-/drizzle-orm-0.32.0.tgz#c85b48eec6350631442f5ee3e65604f963e35f62"
+  integrity sha512-99IlfVGPNHzOFEXo9Phyu5At5TALLsY2t6WxFFy68rYd9Ej4cHX/7WjdPOn7JNRW69MNeNtP8XrDQg43SppuAA==
 
 eastasianwidth@^0.2.0:
   version "0.2.0"
@@ -5057,6 +5057,11 @@ postgres-range@^1.1.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/postgres-range/-/postgres-range-1.1.4.tgz#a59c5f9520909bcec5e63e8cf913a92e4c952863"
   integrity sha512-i/hbxIE9803Alj/6ytL7UHQxRvZkI9O4Sy+J3HGc4F4oo/2eQAjTSNJ0bfxyse3bH0nuVesCk+3IRLaMtG3H6w==
+
+postgres@^3.4.4:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/postgres/-/postgres-3.4.4.tgz#adbe08dc1fff0dea3559aa4f83ded70a289a6cb8"
+  integrity sha512-IbyN+9KslkqcXa8AO9fxpk97PA4pzewvpi2B3Dwy9u4zpV32QicaEdgmF3eSQUzdRk7ttDHQejNgAEr4XoeH4A==
 
 preact-render-to-string@5.2.3:
   version "5.2.3"

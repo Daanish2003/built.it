@@ -1,28 +1,18 @@
 "use server"
 import { validateRequest } from "@/lib/auth/validateRequest"
-
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import crypto from "crypto"
 import db from "@/db"
-import { imagesTable } from "@/db/schema"
+import { videos } from "@/db/schema"
 import { generateId } from "lucia"
 
-type SignedURLResponse = Promise<
-  { failure?: undefined; success: { url: string, imageId: string } }| { failure: string; success?: undefined }>
 
-type GetSignedURLParams = {
-    fileType: string
-    fileSize: number
-    checksum: string
-  }
-
-
-export default async function getSignedURL({
-  fileType,
-  fileSize,
-  checksum,
-}: GetSignedURLParams): Promise<SignedURLResponse> {
+export default async function getSignedVideoURL({
+    fileType,
+    fileSize,
+    checksum
+}: GetSignedURLParams): Promise<SignedVideoURLResponse> {
     const { session } = await validateRequest()
     if(!session) {
         return {
@@ -56,13 +46,10 @@ export default async function getSignedURL({
     })
 
     const acceptedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/webp",
-        "image/jpg"
+        "video/mp4"
     ]
 
-    const maxFileSize = 4 * 1024 * 1024
+    const maxFileSize = 60 * 1024 * 1024
 
     if (!acceptedTypes.includes(fileType)) {
         return { failure: "Invalid file type"}
@@ -86,17 +73,16 @@ export default async function getSignedURL({
     })
 
     const signedURL = await getSignedUrl(s3, putObjectCommand , {
-        expiresIn: 60
+        expiresIn: 180
     })
 
-    const Image = {
+    const video = {
         id: generateId(15),
-        userId: session.userId,
-        url: signedURL.split("?")[0]
+        videoUrl: signedURL.split("?")[0]
     }
 
-    const imageResult = await db.insert(imagesTable).values(Image).returning()
+    const videoResult = await db.insert(videos).values(video).returning()
     return {
-        success: { url: signedURL, imageId: imageResult[0].id}
+        success: { url: signedURL, videoId: videoResult[0].id}
     }
-} 
+}

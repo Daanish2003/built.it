@@ -23,3 +23,17 @@ interface ideas{
 interface IdeaType {
     ideas: ideas[]
 }
+
+
+
+type SignedImageURLResponse = Promise<
+  { failure?: undefined; success: { url: string, imageId: string } }| { failure: string; success?: undefined }>
+
+  type SignedVideoURLResponse = Promise<
+  { failure?: undefined; success: { url: string, videoId: string } }| { failure: string; success?: undefined }>
+
+type GetSignedURLParams = {
+    fileType: string
+    fileSize: number
+    checksum: string
+  }

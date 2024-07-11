@@ -1,5 +1,5 @@
 import db from "@/db";
-import { oauthAccountTable, userTable } from "@/db/schema";
+import { oauthAccount, user } from "@/db/schema";
 import { lucia } from "@/lib/auth";
 import { google } from "@/lib/auth/oauth";
 import { eq } from "drizzle-orm";
@@ -71,8 +71,8 @@ export const GET = async (req: NextRequest) => {
     console.log("google data", googleData)
 
     await db.transaction(async (trx) => {
-      const user = await trx.query.userTable.findFirst({
-        where: eq(userTable.id, googleData.id),
+      const user = await trx.query.user.findFirst({
+        where: eq(user.id, googleData.id),
       })
 
       console.log("User", user)
@@ -80,13 +80,13 @@ export const GET = async (req: NextRequest) => {
       if(!user) {
         console.log("Creating user", user)
 
-        const createdUserRes = await trx.insert(userTable).values({
+        const createdUserRes = await trx.insert(user).values({
           email: googleData.email,
           id: googleData.id,
           name: googleData.name,
           profilePictureUrl: googleData.picture
         }).returning({
-          id: userTable.id
+          id: user.id
         })
 
         if(createdUserRes.length === 0 ) {
@@ -97,7 +97,7 @@ export const GET = async (req: NextRequest) => {
           )
         }
 
-        const createdOAuthAccountRes = await trx.insert(oauthAccountTable).values({
+        const createdOAuthAccountRes = await trx.insert(oauthAccount).values({
           accessToken,
           expiresAt: accessTokenExpiresAt,
           id: googleData.id,
@@ -114,11 +114,11 @@ export const GET = async (req: NextRequest) => {
             { status: 500 }
           )
         } else {
-          const updatedOAuthAccountRes = await trx.update(oauthAccountTable).set({
+          const updatedOAuthAccountRes = await trx.update(oauthAccount).set({
             accessToken,
             expiresAt: accessTokenExpiresAt,
             refreshToken,
-          }).where(eq(oauthAccountTable.id, googleData.id))
+          }).where(eq(oauthAccount.id, googleData.id))
 
           if(updatedOAuthAccountRes.rowCount === 0) {
             trx.rollback()

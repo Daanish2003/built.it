@@ -1,6 +1,6 @@
 
 import db from "@/db"
-import { oauthAccountTable, userTable } from "@/db/schema"
+import { oauthAccount, user } from "@/db/schema"
 import { lucia } from "@/lib/auth"
 import { github } from "@/lib/auth/oauth"
 import { eq } from "drizzle-orm"
@@ -63,14 +63,14 @@ export const GET = async (req: NextRequest) => {
     console.log("githubData", githubData)
 
     await db.transaction(async (trx) => {
-      const user = await trx.query.userTable.findFirst({
-        where: eq(userTable.id, githubData.id),
+      const user = await trx.query.user.findFirst({
+        where: eq(user.id, githubData.id),
       })
       console.log("User", user)
       let session: null
       if (!user) {
         const createdUserRes = await trx
-          .insert(userTable)
+          .insert(user)
           .values({
             id: githubData.id,
             name: githubData.name,
@@ -78,7 +78,7 @@ export const GET = async (req: NextRequest) => {
             profilePictureUrl: githubData.avatar_url,
           })
           .returning({
-            id: userTable.id,
+            id: user.id,
           })
 
         if (createdUserRes.length === 0) {
@@ -93,7 +93,7 @@ export const GET = async (req: NextRequest) => {
          
         
         const createdOAuthAccountRes = await trx
-          .insert(oauthAccountTable)
+          .insert(oauthAccount)
           .values({
             accessToken,
             id: generateId(15),
@@ -113,11 +113,11 @@ export const GET = async (req: NextRequest) => {
         }
       } else {
         const updatedOAuthAccountRes = await trx
-          .update(oauthAccountTable)
+          .update(oauthAccount)
           .set({
             accessToken,
           })
-          .where(eq(oauthAccountTable.id, githubData.id))
+          .where(eq(oauthAccount.id, githubData.id))
 
         if (updatedOAuthAccountRes.rowCount === 0) {
           trx.rollback()

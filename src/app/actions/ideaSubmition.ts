@@ -1,28 +1,23 @@
 "use server"
 import db from "@/db";
-import { ideasTable, imagesTable } from "@/db/schema";
+import { ideas } from "@/db/schema";
 import { validateRequest } from "@/lib/auth/validateRequest";
 import { IdeaSchema } from "@/lib/zod/ideaSchema"
 import { generateId } from "lucia";
 import { revalidatePath } from "next/cache";
 import { z } from "zod"
 
-type Content = {
-    title: string
-    description: string
-  }
 
+export const ideaSubmitting = async (values: z.infer<typeof IdeaSchema>) => {
+    const validatedFields = IdeaSchema.safeParse(values)
 
-export const ideaSubmitting = async (content: Content, imageId: string) => {
-
-    const { title, description } = content
-
-    if (typeof title !== 'string' || typeof description !== 'string') {
+    if(!validatedFields.success) {
         return {
-            error: "Invalid Types"
+            error: "Invalid Fields"
         }
     }
-
+    
+    const { title, description, image, video, tags, categories } = validatedFields.data
 
     const ideaId = generateId(15);
     const { user } = await validateRequest()
@@ -33,13 +28,14 @@ export const ideaSubmitting = async (content: Content, imageId: string) => {
         id: ideaId,
         userId: userId,
         title: title,
-        imageId: imageId,
         description: description,
+        imageId: image,
+        videoId: video,
         createdAt: date,
     }
     console.log(newIdea)
 
-    await db.insert(ideasTable).values(newIdea).execute()
+    await db.insert(ideas).values(newIdea).execute()
 
     revalidatePath("/")
 

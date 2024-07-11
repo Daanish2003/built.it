@@ -1,4 +1,4 @@
-
+"use client"
 import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Button } from '../ui/button'
@@ -8,9 +8,9 @@ import { useSession } from '@/providers/sessionProvider'
 import { useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 import { openState } from '@/lib/store/atom'
+import Link from 'next/link'
 
 const IdeaDialog = () => {
-    const [open ,setOpen] = useRecoilState(openState)
     const { session } = useSession()
     const router = useRouter()
 
@@ -20,27 +20,20 @@ const IdeaDialog = () => {
     }
     
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
+    { session ? (<Button asChild variant={"outline"}><Link href="./shareIdeas">+ share Ideas</Link></Button>): (<Dialog>
         <DialogTrigger asChild>
            <Button size="lg" variant={"outline"}>+ Share Ideas</Button>
         </DialogTrigger>
         <DialogContent>
-            {session ? (<DialogHeader>
-                <DialogTitle>
-                    Share Your Ideas
-                </DialogTitle>
-                <DialogDescription>
-                    Fill the fields to complete submit your ideas
-                </DialogDescription>
-            </DialogHeader>) : (
                 <DialogHeader>
                     <DialogTitle>Required Login</DialogTitle>
                     <DialogDescription>Please login for posting the idea</DialogDescription>
                 </DialogHeader>
-            )}
-            {session ? (<IdeaForm />): (<Button onClick={onClick}>Login</Button>)}
+               <Button onClick={onClick}>Login</Button>
         </DialogContent>
-    </Dialog>
+    </Dialog>)}
+    </>
   )
 }
 
