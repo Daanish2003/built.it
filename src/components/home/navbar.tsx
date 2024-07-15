@@ -3,31 +3,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
-import { logout } from '@/app/actions/logout'
-import { useSession } from '@/providers/sessionProvider'
 import IdeaDialog from '../ideas/ideaDialog'
-
-
-
+import { LogoutButton } from '../auth/logoutButton'
+import { useSession } from '@/providers/sessionProvider'
 
 const Navbar = () => {
+  const { session } = useSession()
   const router = useRouter();
-  const {user , session} = useSession()
-
   function handleClick() {
+    console.log('clicked')
     router.push('/auth/login')
-  }
-
-
-  const logoutHandle = async () => {
-    const res = await logout();
-    if(res.error) {
-       console.log(res.error)
-    } else if (res.success) {
-      console.log(res.message)
-      router.push("/")
-
-    }
   }
 
   return (
@@ -35,13 +20,8 @@ const Navbar = () => {
         <Link href="/"><Image src="/logo.png" width={200} height={200} alt="built.it"/></Link>
         <div className='space-x-4'>
            <IdeaDialog />
-            {
-              session ? (
-              <Button size="lg" onClick={() => logoutHandle()}>Logout</Button>
-              ): (
-                <Button size="lg" onClick={() => handleClick()}>Login</Button>
-              )
-            }
+          {session ? (<LogoutButton>Logout</LogoutButton >) : (<Button size="lg" onClick={() => handleClick()}>Login</Button>
+          )}
         </div>
     </nav>
   )

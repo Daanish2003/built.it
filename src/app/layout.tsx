@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import RecoilContextProvider from "@/lib/store/recoilContextProvider";
-import SessionProvider from "@/providers/sessionProvider";
-import { validateRequest } from "@/lib/auth/validateRequest";
+import RecoilProvider from "@/providers/recoilProvider";
+import { SessionProvider } from "@/providers/sessionProvider";
+import { validatedRequest } from "@/lib/auth";
 
 
 const poppins = Poppins({ subsets: ["latin"] ,weight: [ "100", "200", "300", "400", "500", "600","700", "800", "900"]})
@@ -18,17 +18,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const sessionData = await validateRequest()
-  console.log(sessionData)
+  const session = await validatedRequest()
   return (
     <html lang="en">
       <body className={poppins.className}>
       <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-fuchsia-400 opacity-20 blur-[100px]"></div></div>
-        <SessionProvider value={sessionData}>
-           <RecoilContextProvider>
-             {children}
-           </RecoilContextProvider>
-        </SessionProvider>
+       <SessionProvider value= {session}>
+       <RecoilProvider>
+               {children}
+           </RecoilProvider>
+       </SessionProvider>
       </body>
     </html>
   );

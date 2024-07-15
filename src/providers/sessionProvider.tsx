@@ -1,36 +1,34 @@
 "use client"
-import { Session, User } from 'lucia'
-import React, { createContext, useContext } from 'react'
-
- 
-
-
+import { Session, User } from "lucia"
+import { createContext, useContext } from "react"
 
 interface SessionProviderProps {
-    user: User | null
-    session: Session | null
+  user: User | null
+  session: Session | null
 }
 
 const SessionContext = createContext<SessionProviderProps>(
-    {} as SessionProviderProps
+  {} as SessionProviderProps
 )
 
-const SessionProvider = ({children, value}: { children: React.ReactNode, value: SessionProviderProps}) => {
+export const SessionProvider = ({
+  children,
+  value,
+}: {
+  children: React.ReactNode
+  value: SessionProviderProps
+}) => {
   return (
-    <SessionContext.Provider value={value}>
-        {children}
-    </SessionContext.Provider>
+    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
   )
 }
 
-export default SessionProvider
-
 export const useSession = () => {
-    const sessionContext = useContext(SessionContext)
+  const sessionContext = useContext(SessionContext)
 
-    if(!sessionContext) {
-        throw new Error ("useSession must me within a SessionProvider")
-    }
+  if (!sessionContext) {
+    throw new Error("useSession must be used within a SessionProvider")
+  }
 
-    return sessionContext
+  return sessionContext
 }

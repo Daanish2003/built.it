@@ -6,8 +6,6 @@ import { DialogDescription } from '@radix-ui/react-dialog'
 import IdeaForm from './ideaForm'
 import { useSession } from '@/providers/sessionProvider'
 import { useRouter } from 'next/navigation'
-import { useRecoilState } from 'recoil'
-import { openState } from '@/lib/store/atom'
 import Link from 'next/link'
 
 const IdeaDialog = () => {

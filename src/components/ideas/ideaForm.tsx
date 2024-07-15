@@ -1,7 +1,6 @@
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { useRecoilValue, useRecoilValueLoadable, useSetRecoilState } from 'recoil'
 import { ImagePlus, MonitorPlay } from 'lucide-react'
 import Image from 'next/image'
 import IdeaFormWrapper from './ideaFormWrapper'
@@ -14,28 +13,26 @@ import { IdeaSchema } from '@/lib/zod/ideaSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import { ideaSubmitting } from '@/app/actions/ideaSubmition'
-import React, { useState } from 'react'
+import { ideaSubmitting } from '@/actions/ideaSubmition'
+import React, { useState, useTransition } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { categoriesOption, tagsOption } from '@/lib/constant/options'
-import computeSHA256 from '@/lib/helpers/computeSHA256'
-import axios from "axios"
-import getSignedImageURL from '@/app/actions/getsignedImageURL'
-import getSignedVideoURL from '@/app/actions/getSignedVideoURL'
+import handleFileUpload from '@/lib/helpers/handleFileUpload'
 
 
 const IdeaForm = () => {
   const router = useRouter()
   const [previewVideo, setPreviewVideo] = useState<string | ArrayBuffer |null>(null)
   const [previewImage, setPreviewImage] = useState<string | ArrayBuffer |null>(null)
+  const [isPending, setTransition] = useTransition()
 
   const form = useForm<z.infer<typeof IdeaSchema>>({
     resolver: zodResolver(IdeaSchema),
     defaultValues: {
       title: "",
       description: "",
-      image: "",
-      video: "",
+      image: 0,
+      video: 0,
       categories: [],
       tags: [],
     }
@@ -46,14 +43,11 @@ const IdeaForm = () => {
     if(file) {
       try {
         const reader = new FileReader()
-        console.log("uploading image")
-        const imageId = await handleImageUpload(file)
-        console.log("image has been uploaded")
+        const id = await handleFileUpload(file, "image")
         reader.onload = () => setPreviewImage(reader.result)
         reader.readAsDataURL(file)
-        form.setValue("image", imageId)
+        form.setValue("image", id)
         form.clearErrors("image")
-        console.log("image has been rendered")
       } catch (error) {
         throw new Error("failed to load image")
       }
@@ -69,14 +63,11 @@ const onDropVideo = async(acceptedFiles: File[]) => {
     if(file) {
       try {
         const reader = new FileReader()
-        console.log("uploading video")
-        const videoId = await handleVideoUpload(file)
-        console.log("video has been uploaded")
+        const id = await handleFileUpload(file, "video")
         reader.onload = () => setPreviewVideo(reader.result)
         reader.readAsDataURL(file)
-        form.setValue("video", videoId)
+        form.setValue("video", id)
         form.clearErrors("video")
-        console.log("video has been rendered")
       } catch (error) {
         throw new Error("failed to load image")
       }
@@ -110,65 +101,10 @@ const {
   accept: { "video/mp4": [] },
 });
 
-const handleImageUpload = async(file: File) => {
-   const signedURLResult = await getSignedImageURL({
-     fileType : file.type,
-     fileSize: file.size,
-     checksum : await computeSHA256(file)
-   })
-
-   if(signedURLResult.failure !== undefined) {
-      throw new Error(signedURLResult.failure)
-   }
-
-   const { url, imageId} = signedURLResult.success
-
-   await axios(url, {
-      method: "put",
-      data: file,
-      headers: {
-        "Content-Type": file.type
-      }
-   })
-   
-   return imageId
-  }
-
-  const handleVideoUpload = async(file: File) => {
-    const signedURLResult = await getSignedVideoURL({
-      fileType : file.type,
-      fileSize: file.size,
-      checksum : await computeSHA256(file)
-    })
- 
-    if(signedURLResult.failure !== undefined) {
-       throw new Error(signedURLResult.failure)
-    }
- 
-    const { url, videoId} = signedURLResult.success
- 
-    await axios(url, {
-       method: "put",
-       data: file,
-       headers: {
-         "Content-Type": file.type
-       }
-    })
-    
-    return videoId
-   }
 
 const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
     console.log(values)
-      await ideaSubmitting(values).then((res) => {
-        if(res.success){
-           form.reset()
-           setPreviewImage(null)
-           router.push("/")
-         } else if (res.error) {
-          console.log(res.error)
-         }
-    })
+      
 }
 
 
@@ -216,7 +152,8 @@ const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
                   <ImagePlus
                     className={`size-40 ${previewImage ? "hidden" : "block"}`}
                   />
-                  <Input {...getImageInputProps()} 
+                  <Input {...getImageInputProps()}
+                        disabled={isPending} 
                         type="file" 
                         accept='image/jpeg, image/png, image/webp, image/jpg'
                         />
@@ -244,7 +181,11 @@ const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
               <FormItem>
                  <FormLabel>Title</FormLabel>
                  <FormControl>
-                    <Input placeholder='Enter the title' type="text" {...field} />
+                    <Input 
+                       placeholder='Enter the title' 
+                       type="text" {...field} 
+                       disabled={isPending} 
+                       />
                  </FormControl>
                  <FormMessage />
               </FormItem>
@@ -257,7 +198,8 @@ const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
               <FormItem>
                  <FormLabel htmlFor='description'>Description</FormLabel>
                  <FormControl>
-                      <AutosizeTextarea 
+                      <AutosizeTextarea
+                          disabled={isPending}  
                           id="description"
                           placeholder='Enter the description of your idea' 
                           {...field} />
@@ -269,11 +211,12 @@ const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
           <FormField 
             control={form.control}
             name="categories"
-            render={({field}) => (
+            render={() => (
               <FormItem>
                  <FormLabel>Categories</FormLabel>
                  <FormControl>
                  <MultipleSelector
+                      disabled={isPending} 
                       onSearch={async (value) => {
                         const res = await mockCategorySearch(value);
                         return res;
@@ -303,6 +246,7 @@ const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
                  <FormLabel>tags</FormLabel>
                  <FormControl>
                  <MultipleSelector
+                     disabled={isPending} 
                      {...field}
                       onSearch={async (value) => {
                         const res = await mockTagSearch(value);
@@ -360,6 +304,7 @@ const onIdeaSubmit = async (values: z.infer<typeof IdeaSchema>) => {
                     className={`size-40 ${previewVideo ? "hidden" : "block"}`}
                   />
                   <Input {...getVideoInputProps()} 
+                        disabled={isPending} 
                         type="file" 
                         accept='video/mp4'
                         />

@@ -1,3 +1,5 @@
+import { FilterEnum } from "zod"
+
 interface AuthCard {
     cardTitle: string,
     cardDescription: string,
@@ -24,16 +26,27 @@ interface IdeaType {
     ideas: ideas[]
 }
 
+type SignedURLResponse = Promise<
+  { failure?: undefined; success: { url: string, id: number } }| { failure: string; success?: undefined }>
 
-
-type SignedImageURLResponse = Promise<
-  { failure?: undefined; success: { url: string, imageId: string } }| { failure: string; success?: undefined }>
-
-  type SignedVideoURLResponse = Promise<
-  { failure?: undefined; success: { url: string, videoId: string } }| { failure: string; success?: undefined }>
 
 type GetSignedURLParams = {
     fileType: string
     fileSize: number
     checksum: string
+    uploadType: z.infer<typeof fileEnum>
   }
+
+type FormErrorProps = {
+    message? : string
+}
+
+type objectCommandType = {
+    bucketName : string,
+    fileType   : string,
+    fileSize   : number,
+    checksum   : string
+}
+
+
+  
